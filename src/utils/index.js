@@ -14,7 +14,7 @@ export const getBookShelves = (shelves, books, updateBookShelf) => {
     divShevles.push(
       <BookShelf
         key={key}
-        books={books}
+        books={books.filter((book) => book.shelf === key)}
         shelfName={value}
         shelfType={key}
         updateBookShelf={updateBookShelf}

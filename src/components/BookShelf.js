@@ -17,7 +17,7 @@ class BookShelf extends Component {
         <h2 className='bookshelf-title' >{this.props.shelfName}</h2 >
         {
           utils.displayBooksGrid(
-            this.props.books.filter((book) => book.shelf === this.props.shelfType), this.props.updateBookShelf
+            this.props.books, this.props.updateBookShelf
           )
         }
       </div >
