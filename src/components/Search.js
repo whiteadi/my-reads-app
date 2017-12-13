@@ -16,26 +16,49 @@ class Search extends Component {
   };
 
   updateQuery = (query) => {
-    this.setState({ query: query.trim(), });
-    if (query.length > 1) {
-      this.searchBooks(query);
+    this.setState({ query, });
+    if(/[\w\s]/i.test(query) && query.length >= 1) {
+      /*eslint no-undef: "error"*/
+      /*eslint-env browser*/
+      setInterval(() => {
+        localStorage.setItem('query', this.state.query.trim());
+      }, 1000);
+      this.searchBooks(query.trim());
+    } else if (query.trim().length === 0) {
+      this.setState({ books: [], })
+    } else {
+      this.searchBooks(query.trim());
     }
   };
 
   searchBooks = (query) => {
-    BooksAPI
-      .search(query)
-      .then(this.setShelves)
-      .then(books => this.setState({ books, }));
+    if(/[\w\s]/i.test(query)) {
+      BooksAPI
+        .search(query)
+        .then(this.setShelves)
+        .then(books => this.setState({ books, }));
+    }
   };
 
   setShelves = (books) => {
-    return books.map((book) => {
-      const shelf = this.props.books[book.id];
-      book.shelf = shelf ? shelf : 'none';
-      return book;
-    });
+    if (Array.isArray(books)) {
+      return books.map((book) => {
+        const shelf = this.props.books[book.id];
+        book.shelf = shelf ? shelf : 'none';
+        return book;
+      });
+    } else {
+      return [];
+    }
   };
+
+  componentDidMount = () => {
+    const query = localStorage.getItem('query') || ''
+    if (query) {
+      this.setState({ query: query.trim(), });
+      this.searchBooks(query);
+    }
+  }
 
   render () {
 
